@@ -22,15 +22,13 @@ echo "perform ingest component"
 java -jar ingest.jar train.csv
 
 echo "create and train pipeline"
-trained=ifactId-$version-$(date +%s)".ser"
+train_version=$(date +%s)
+trained=$artifactId-$version-$train_version".ser"
 java -jar pipeline.jar $trained
 
-echo  "package and upload trained pipeline"
-
-"https://github.com/grro/ml_deploy/blob/master/repo/lib-releases/""${groupId//.//}""/""${artifactId//.//}""/$version/""${artifactId//.//}""-$version-jar-with-dependencies.jar?raw=true"
-
-echo "groupId=$groupId&artifactId=$artifactId&version=$version" > "artifact.info"
-tar cfv $groupId"_"$artifactId"_"$version"_"$now.tar artifact.info trainedstate.ser
+echo  "upload trained pipeline"
+model_uri="https://github.com/grro/ml_deploy/blob/master/repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version$train_version/$trained
+echo "uploading $model_uri"
 
 #rm pipeline.jar
 #rm ingest.jar
