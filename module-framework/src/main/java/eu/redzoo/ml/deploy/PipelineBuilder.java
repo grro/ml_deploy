@@ -12,9 +12,9 @@ import java.util.Map;
 public abstract class PipelineBuilder<I, O, L> {
 
 	public Pipeline<I, O, L> train(String[] args) throws IOException {
-		var trainedFilename = args.length > 0 ? args[1].trim() : "trainedstate.ser";
-		var recordsFilename = args.length > 1 ? args[2] .trim(): "records.json";
-		var labelsFilename = args.length > 2 ? args[3].trim() : "labels.json";
+		var trainedFilename = args.length > 0 ? args[0].trim() : "trainedstate.ser";
+		var recordsFilename = args.length > 1 ? args[1] .trim(): "records.json";
+		var labelsFilename = args.length > 2 ? args[2].trim() : "labels.json";
 
 		List<Map<String, Object>> records = List.of(new ObjectMapper().readValue(new File(recordsFilename), Map[].class));
 		List<Double> labels = List.of(new ObjectMapper().readValue(new File(labelsFilename), Double[].class));
