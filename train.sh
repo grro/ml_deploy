@@ -9,9 +9,9 @@ pipline_uri=$groupId"/"$artifactId"/"$version
 
 echo $pipline_uri
 
-ingest_jar="module-ingest/target/ingest-1.0-SNAPSHOT-jar-with-dependencies.jar"
-source_data="module-ingest/src/test/resources/train.csv"
-pipeline_jar="module-pipeline/target/pipeline-1.0-SNAPSHOT-jar-with-dependencies.jar"
+ingest_jar="module-ingest-housedata/target/ingest-housedata-1.0-SNAPSHOT-jar-with-dependencies.jar"
+source_data="module-ingest-housedata/src/test/resources/train.csv"
+pipeline_jar="module-pipeline-houseprice/target/pipeline-houseprice-1.0-SNAPSHOT-jar-with-dependencies.jar"
 
 java -jar $ingest_jar $source_data
 java -jar $pipeline_jar

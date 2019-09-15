@@ -18,8 +18,8 @@
 
   <modules>
       <module>module-framework</module>
-      <module>module-ingest</module>
-      <module>module-pipeline</module>
+      <module>module-ingest-housedata</module>
+      <module>module-pipeline-houseprice</module>
   </modules>
 
   <dependencies>

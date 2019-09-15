@@ -3,3 +3,10 @@
 /module-ingest/src/test/resources/data_description.txt
 /module-ingest/src/test/resources/test.csv
 /module-ingest/src/test/resources/train.csv
+/module-pipeline-houseprice/labels.json
+/module-pipeline-houseprice/records.json
+/module-pipeline-houseprice/src/main/resources/labels.json
+/module-pipeline-houseprice/src/main/resources/records.json
+/module-pipeline-houseprice/test.ser
+/records.json
+/trainedstate.ser
