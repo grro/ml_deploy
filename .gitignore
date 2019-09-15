@@ -16,3 +16,4 @@
 /module-ingest-housedata/target
 /module-ingest-housedata/records.json
 /module-ingest-housedata/labels.json
+/*.ser
