@@ -5,27 +5,27 @@ groupId="eu.redzoo.ml"
 artifactId="pipeline-houseprice"
 version="1.0.3"
 
-echo "loading components"
+echo "copying pipieline jar to local dir"
 pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/""${groupId//.//}""/""${artifactId//.//}""/$version/""${artifactId//.//}""-$version-jar-with-dependencies.jar?raw=true"
-curl -L $pipeline_app_uri > pipeline.jar
+curl -s -L $pipeline_app_uri --output pipeline.jar
 
+echo "copying ingest jar to local dir"
 ingest_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/eu/redzoo/ml/ingest-housedata/2.2.3/ingest-housedata-2.2.3-jar-with-dependencies.jar?raw=true"
-curl -L $ingest_app_uri > ingest.jar
+curl -s -L $ingest_app_uri --output ingest.jar
 
+echo "copying source data to local dir"
 train_data="https://github.com/grro/ml_deploy/blob/master/src/test/resources/train.csv?raw=true"
-curl -L $train_data > train.csv
+curl -s -L $train_data --output train.csv
 
-echo "perform ingest component to generate houses.json and prices.json files"
+echo "perform ingest jar consuming source data to generate houses.json and prices.json"
 java -jar ingest.jar train.csv houses.json prices.json
 
-echo "create and train pipeline with houses.json and prices.json"
+echo "perform pipeline jar to create and train a pipeline consuming houses.json and prices.json"
 train_version=$(date +%s)
 trained=$artifactId-$version-$train_version".ser"
 java -jar pipeline.jar houses.json prices.json $trained
 
-echo  "upload trained pipeline $trained"
-model_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
-echo "uploading $model_uri"
+echo  "upload trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
 
 #rm $trained
 rm pipeline.jar

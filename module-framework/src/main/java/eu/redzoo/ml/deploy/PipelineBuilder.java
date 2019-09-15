@@ -22,7 +22,7 @@ public abstract class PipelineBuilder<I, O, L> {
 		Pipeline pipeline = newPipeline();
 		var trainMetric = pipeline.fit(records, labels);
 		pipeline.save(new File(trainedFilename));
-		System.out.println(trainMetric);
+		System.out.println(trainedFilename + " " + trainMetric);
 		return pipeline;
 	}
 

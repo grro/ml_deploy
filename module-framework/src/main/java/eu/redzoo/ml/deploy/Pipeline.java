@@ -131,7 +131,7 @@ public class Pipeline<I, O, L> {
 
 		@Override
 		public String toString() {
-			var text = "trained at " + trainDate + " with " + numExamples + " records";
+			var text = "trained at " + trainDate + " with " + numExamples + " records. metrics:";
 			text = text + "\n" + Joiner.on("\n").withKeyValueSeparator("=").join(metrics);
 			return text;
 		}
