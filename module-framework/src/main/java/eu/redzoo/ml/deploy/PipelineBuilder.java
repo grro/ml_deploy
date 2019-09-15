@@ -2,6 +2,7 @@ package eu.redzoo.ml.deploy;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +21,10 @@ public abstract class PipelineBuilder<I, O, L> {
 		List<Double> labels = List.of(new ObjectMapper().readValue(new File(labelsFilename), Double[].class));
 
 		Pipeline pipeline = newPipeline();
-		var trainMetric = pipeline.fit(records, labels);
+		var metrics = pipeline.fit(records, labels);
 		pipeline.save(new File(trainedFilename));
-		System.out.println(trainedFilename + " " + trainMetric);
+		System.out.println(trainedFilename + " trained at " + metrics.getTrainDate() + " with " + metrics.getNumExamples() +
+				           " records (" + Joiner.on(",").withKeyValueSeparator("=").join(metrics.getMetrics()) + ")");
 		return pipeline;
 	}
 

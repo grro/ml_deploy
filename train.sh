@@ -17,15 +17,15 @@ echo "copying source data to local dir"
 train_data="https://github.com/grro/ml_deploy/blob/master/src/test/resources/train.csv?raw=true"
 curl -s -L $train_data --output train.csv
 
-echo "perform ingest jar consuming source data to generate houses.json and prices.json"
+echo "performing ingest jar consuming source data to generate houses.json and prices.json"
 java -jar ingest.jar train.csv houses.json prices.json
 
-echo "perform pipeline jar to create and train a pipeline consuming houses.json and prices.json"
+echo "performing pipeline jar to create and train a pipeline consuming houses.json and prices.json"
 train_version=$(date +%s)
 trained=$artifactId-$version-$train_version".ser"
 java -jar pipeline.jar houses.json prices.json $trained
 
-echo  "upload trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
+echo  "uploadin trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
 
 #rm $trained
 rm pipeline.jar

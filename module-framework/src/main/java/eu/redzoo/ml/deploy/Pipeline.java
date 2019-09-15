@@ -129,11 +129,16 @@ public class Pipeline<I, O, L> {
 			this.metrics = metrics;
 		}
 
-		@Override
-		public String toString() {
-			var text = "trained at " + trainDate + " with " + numExamples + " records. metrics:";
-			text = text + "\n" + Joiner.on("\n").withKeyValueSeparator("=").join(metrics);
-			return text;
-		}
+        public LocalDate getTrainDate() {
+            return trainDate;
+        }
+
+        public int getNumExamples() {
+            return numExamples;
+        }
+
+        public Map<String, Object> getMetrics() {
+            return metrics;
+        }
 	}
 }
