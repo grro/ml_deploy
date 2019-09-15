@@ -34,10 +34,8 @@ public class HousePriceModel implements Estimator<Double, Double> {
 			// evaluate the quality
 			Evaluation eval = new Evaluation(randData);
 			eval.evaluateModel(targetFunction, testData);
-			System.out.println("\n***");
-			System.out.println(eval.toSummaryString("Results", false));
-			var metrics = Maps.<String, Object>newHashMap();
-			return metrics;
+			return Map.of("CorrelationCoefficient", eval.correlationCoefficient(),
+					      "RelativeAbsoluteError", eval.relativeAbsoluteError());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

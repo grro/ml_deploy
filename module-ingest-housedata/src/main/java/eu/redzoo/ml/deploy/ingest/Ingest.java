@@ -24,16 +24,11 @@ public class Ingest {
 		var labelsFilename = args.length > 2 ? args[2] .trim(): "labels.json";
 
 		var sourcefile = new File(sourceFilename);
-        System.out.println("reading " + sourcefile.getAbsolutePath());
-		var lines = Files.readAllLines(sourcefile.toPath());
+ 		var lines = Files.readAllLines(sourcefile.toPath());
 		var housesAndPrices = new HouseTrainDataLoader().load(House.class, lines);
 
 		new ObjectMapper().writeValue(new File(recordsFilename), housesAndPrices.getLeft());
 		new ObjectMapper().writeValue(new File(labelsFilename), housesAndPrices.getRight());
-
-		System.out.println(housesAndPrices.getLeft().size() + " records/labels processed (" +
-				           new File(recordsFilename).getName() + "/" +
-						   new File(labelsFilename).getName() + ")");
 
 		System.out.println(new File(recordsFilename).getName() + ", " + new File(labelsFilename).getName() +
 				           " created with " + housesAndPrices.getLeft().size() + " entries");
