@@ -10,3 +10,5 @@
 /module-pipeline-houseprice/test.ser
 /records.json
 /trainedstate.ser
+/artifact.info
+/labels.json
