@@ -34,6 +34,9 @@ public class Ingest {
 		System.out.println(housesAndPrices.getLeft().size() + " records/labels processed (" +
 				           new File(recordsFilename).getName() + "/" +
 						   new File(labelsFilename).getName() + ")");
+
+		System.out.println(new File(recordsFilename).getName() + ", " + new File(labelsFilename).getName() +
+				           " created with " + housesAndPrices.getLeft().size() + " entries");
 	}
 
 
