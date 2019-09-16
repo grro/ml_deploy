@@ -21,14 +21,13 @@ additional_dependency="<dependency><groupId>"$groupId"</groupId><artifactId>"$ar
 new_pom=${pom/"<!-- PLACEHOLDER -->"/$additional_dependency}
 echo $new_pom > pom.xml
 
-mvn clean install
-
-
 echo "copying $artifactId jar to local dir"
 trained=$artifactId-$version-$train_version".ser"
 trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained"?raw=true"
 echo $trained_uri
-curl -s -L $trained_uri --output trained.ser
+curl -s -L $trained_uri --output src/main/resources/trained.ser
+
+mvn clean install
 
 java -jar target/module-framework-rest-1.0-SNAPSHOT.jar --estimatorFilename=trained.ser
 
