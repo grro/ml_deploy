@@ -60,7 +60,8 @@ public class Pipeline<I, O, L> implements Estimator<I, L> {
 	    return load(new FileInputStream(file));
 	}
 
-    public static <I, O, L> Pipeline<I, O, L> load(InputStream is) throws IOException {
+	@SuppressWarnings("unchecked")
+	public static <I, O, L> Pipeline<I, O, L> load(InputStream is) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(is)) {
             Transformer<I, O, L> transformer = (Transformer<I, O, L> ) ois.readObject();
             Estimator<O, L> model = (Estimator<O, L>) ois.readObject();
@@ -95,7 +96,7 @@ public class Pipeline<I, O, L> implements Estimator<I, L> {
 		private final Transformer<I, T, L> trans1;
 		private final Transformer<T, O, L> trans2;
 
-		public TransformerChain(Transformer<I, T, L> trans1, Transformer<T, O, L> trans2) {
+		TransformerChain(Transformer<I, T, L> trans1, Transformer<T, O, L> trans2) {
 			this.trans1 = trans1;
 			this.trans2 = trans2;
 		}
@@ -119,30 +120,5 @@ public class Pipeline<I, O, L> implements Estimator<I, L> {
 			metrics.putAll(metrics2);
 			return metrics;
 		}
-	}
-
-	public static class TrainMetrics {
-
-		private final LocalDate trainDate;
-		private final int numExamples;
-		private final Map<String, Object> metrics;
-
-		TrainMetrics(int numExamples, Map<String, Object> metrics) {
-			this.trainDate = LocalDate.now();
-			this.numExamples = numExamples;
-			this.metrics = metrics;
-		}
-
-        public LocalDate getTrainDate() {
-            return trainDate;
-        }
-
-        public int getNumExamples() {
-            return numExamples;
-        }
-
-        public Map<String, Object> getMetrics() {
-            return metrics;
-        }
 	}
 }

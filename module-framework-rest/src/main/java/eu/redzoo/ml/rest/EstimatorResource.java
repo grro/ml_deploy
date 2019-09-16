@@ -31,6 +31,7 @@ public class EstimatorResource {
 		return batchPredict(Lists.newArrayList(record)).get(0);
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/predictions", method = RequestMethod.POST)
 	public List<Object> batchPredict(@RequestBody ArrayList<HashMap<String, Object>> records) {
 		return estimator.predict(records);

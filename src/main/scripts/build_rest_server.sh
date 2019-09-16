@@ -37,5 +37,6 @@ cd ../../..
 
 echo "build docker image"
 docker build -t $groupId"/"$artifactId":"$version"-"$train_version .
-ls
+
+rm -rf build
 
