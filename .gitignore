@@ -21,3 +21,5 @@
 /module-ingest-housedata/.idea
 /build
 /src/main/scripts/build
+/module-pipeline-houseprice/src/test/resources/records.json
+/module-pipeline-houseprice/src/test/resources/labels.json
