@@ -32,7 +32,7 @@ mv trained.ser src/main/resources
 echo "build rest server jar including the specific pipeline artifacts"
 mvn clean install
 
-cp target/module-framework-rest-1.0-SNAPSHOT.jar ../../rest_server.jar
+cp target/module-framework-rest-1.0.3.jar ../../rest_server.jar
 cd ../../..
 
 echo "build docker image"

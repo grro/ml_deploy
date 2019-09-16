@@ -5,7 +5,7 @@ groupId="eu.redzoo.ml"
 artifactId="pipeline-houseprice"
 version="1.0.3"
 
-echo "copying pipieline jar to local dir"
+echo "copying pipeline jar to local dir"
 pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/""${groupId//.//}""/""${artifactId//.//}""/$version/""${artifactId//.//}""-$version-jar-with-dependencies.jar?raw=true"
 curl -s -L $pipeline_app_uri --output pipeline.jar
 
@@ -27,7 +27,7 @@ java -jar pipeline.jar houses.json prices.json $trained
 
 echo  "uploading trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
 
-rm $trained
+#rm $trained
 rm pipeline.jar
 rm ingest.jar
 rm train.csv
