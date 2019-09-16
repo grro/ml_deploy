@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EstimatorResource {
 	private final Estimator estimator;
 
 	EstimatorResource() throws IOException  {
-		var is = new ClassPathResource("trained.ser").getInputStream();
+		InputStream is = new ClassPathResource("trained.ser").getInputStream();
 		this.estimator = Pipeline.load(is);
 	}
 
