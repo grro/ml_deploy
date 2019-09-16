@@ -7,7 +7,6 @@
 		<artifactId>parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>eu.redzoo.ml</groupId>
 	<artifactId>module-framework-rest</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -18,6 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+		<start-class>eu.redzoo.ml.rest.EstimatorResource</start-class>
 	</properties>
 
 	<dependencies>
@@ -41,18 +41,12 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
+        <dependency>
 			<groupId>eu.redzoo.ml</groupId>
-			<artifactId>pipeline-houseprice</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>2.1.8.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
+            <artifactId>pipeline-houseprice</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+		<!-- PLACEHOLDER -->
 	</dependencies>
 
 	<build>
@@ -60,10 +54,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>eu.redzoo.ml.rest.RestApplication</mainClass>
-				</configuration>
+				<version>2.1.8.RELEASE</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

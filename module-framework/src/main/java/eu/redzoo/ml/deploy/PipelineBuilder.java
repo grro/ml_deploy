@@ -23,7 +23,7 @@ public abstract class PipelineBuilder<I, O, L> {
 		Pipeline pipeline = newPipeline();
 		var metrics = pipeline.fit(records, labels);
 		pipeline.save(new File(trainedFilename));
-		System.out.println(trainedFilename + " trained: " + Joiner.on(",").withKeyValueSeparator("=").join(metrics) + ")");
+		System.out.println(trainedFilename + " trained (" + Joiner.on(",").withKeyValueSeparator("=").join(metrics) + ")");
 		return pipeline;
 	}
 
