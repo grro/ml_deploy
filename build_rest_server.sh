@@ -26,11 +26,11 @@ mvn clean install
 
 echo "copying $artifactId jar to local dir"
 trained=$artifactId-$version-$train_version".ser"
-trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
+trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained"?raw=true"
 echo $trained_uri
 curl -s -L $trained_uri --output trained.ser
 
-#java -jar target/module-framework-rest-1.0-SNAPSHOT.jar --estimatorFilename=trained.ser
+java -jar target/module-framework-rest-1.0-SNAPSHOT.jar --estimatorFilename=trained.ser
 
 
 # download

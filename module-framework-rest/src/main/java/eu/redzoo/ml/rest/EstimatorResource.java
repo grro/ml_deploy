@@ -6,9 +6,9 @@ import eu.redzoo.ml.deploy.Pipeline;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +21,8 @@ public class EstimatorResource {
 
 	private final Estimator estimator;
 
-	EstimatorResource(@Value("${estimatorFilename}") String filename) throws IOException  {
-		this.estimator = Pipeline.load(new File(filename));
+	EstimatorResource() throws IOException  {
+		this.estimator = Pipeline.load(ResourceUtils.getFile("classpath:trained.ser"));
 	}
 
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST)
