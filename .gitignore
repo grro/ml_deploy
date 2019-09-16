@@ -20,3 +20,4 @@
 /.idea
 /module-ingest-housedata/.idea
 /build
+/src/main/scripts/build
