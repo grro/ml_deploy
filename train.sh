@@ -25,7 +25,7 @@ train_version=$(date +%s)
 trained=$artifactId-$version-$train_version".ser"
 java -jar pipeline.jar houses.json prices.json $trained
 
-echo  "uploadin trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
+echo  "uploading trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
 
 #rm $trained
 rm pipeline.jar
