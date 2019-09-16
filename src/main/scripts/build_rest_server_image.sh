@@ -3,7 +3,7 @@
 # define pipeline to train
 groupId="eu.redzoo.ml"
 artifactId="pipeline-houseprice"
-version="1.0-SNAPSHOT"
+version="1.0.3"
 train_version="1568611516"
 
 mkdir build
@@ -38,5 +38,5 @@ cd ../../..
 echo "build docker image"
 docker build -t $groupId"/"$artifactId":"$version"-"$train_version .
 
-rm -rf build
+#rm -rf build
 
