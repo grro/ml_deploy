@@ -18,6 +18,7 @@
 
   <modules>
       <module>module-framework</module>
+      <module>module-framework-rest</module>
       <module>module-ingest-housedata</module>
       <module>module-pipeline-houseprice</module>
   </modules>

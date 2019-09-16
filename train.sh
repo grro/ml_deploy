@@ -32,4 +32,4 @@ rm pipeline.jar
 rm ingest.jar
 rm train.csv
 rm prices.json
-rm houses.json
+houses.json

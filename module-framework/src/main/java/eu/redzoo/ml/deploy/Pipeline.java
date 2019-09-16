@@ -1,6 +1,5 @@
 package eu.redzoo.ml.deploy;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,39 +12,40 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class Pipeline<I, O, L> {
+public class Pipeline<I, O, L> implements Estimator<I, L> {
 
 	private final Transformer<I, O, L> transformer;
 	private final Estimator<O, L> model;
-	private final List<TrainMetrics> trainMetrics = Lists.newArrayList();
+	private final List<Map<String, Object>> trainMetrics = Lists.newArrayList();
 
 	private Pipeline(Transformer<I, O, L> transformer, Estimator<O, L> model) {
 		this.transformer = transformer;
 		this.model = model;
 	}
 
-	public TrainMetrics fit(List<Map<String, I>> records, List<L> labels) {
+	public Map<String, Object> fit(List<Map<String, I>> records, List<L> labels) {
 		var immutableRecords = records.stream().map(Collections::unmodifiableMap).collect(Collectors.toList());
 
 		// first fit the transformer
-		var metraicsTrans = transformer.fit(immutableRecords, labels);
+		var metricsTrain = transformer.fit(immutableRecords, labels);
 
 		// than the model
 		var transformed_records_and_labels = transformer.transform(immutableRecords, labels);
 		var metricsModel = model.fit(transformed_records_and_labels.getLeft(), transformed_records_and_labels.getRight());
 
-		var metrics = Maps.newHashMap(metraicsTrans);
+		var metrics = Maps.<String, Object>newHashMap();
+		metrics.put("trainDate", LocalDate.now().toString());
+		metrics.put("numExamples", transformed_records_and_labels.getKey().size());
 		metrics.putAll(metricsModel);
-		var trainMetric = new TrainMetrics(transformed_records_and_labels.getLeft().size(), metrics);
-		trainMetrics.add(trainMetric);
-		return trainMetric;
+		metrics.putAll(metricsTrain);
+		return metrics;
 	}
 
 	public  List<L> predict(List<Map<String, I>> records) {
 		return model.predict(transformer.transform(records));
 	}
 
-	public List<TrainMetrics> getTrainMetrics() {
+	public List<Map<String, Object>> getTrainMetrics() {
 		return Lists.newArrayList(trainMetrics);
 	}
 
