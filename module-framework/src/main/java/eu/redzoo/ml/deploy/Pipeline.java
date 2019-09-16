@@ -57,14 +57,18 @@ public class Pipeline<I, O, L> implements Estimator<I, L> {
 	}
 
 	public static <I, O, L> Pipeline<I, O, L> load(File file) throws IOException {
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-			Transformer<I, O, L> transformer = (Transformer<I, O, L> ) ois.readObject();
-			Estimator<O, L> model = (Estimator<O, L>) ois.readObject();
-			return new Pipeline<>(transformer, model);
-		} catch (ClassNotFoundException cnfe) {
-			throw new RuntimeException(cnfe);
-		}
+	    return load(new FileInputStream(file));
 	}
+
+    public static <I, O, L> Pipeline<I, O, L> load(InputStream is) throws IOException {
+        try (ObjectInputStream ois = new ObjectInputStream(is)) {
+            Transformer<I, O, L> transformer = (Transformer<I, O, L> ) ois.readObject();
+            Estimator<O, L> model = (Estimator<O, L>) ois.readObject();
+            return new Pipeline<>(transformer, model);
+        } catch (ClassNotFoundException cnfe) {
+            throw new RuntimeException(cnfe);
+        }
+    }
 
 	public static <I, O, L> Pipeline.Builder<I, O, L> add(Transformer<I, O, L> transformer) {
 		return new Pipeline.Builder<I, O, L>(transformer);

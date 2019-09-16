@@ -3,10 +3,9 @@ package eu.redzoo.ml.rest;
 import com.google.common.collect.Lists;
 import eu.redzoo.ml.deploy.Estimator;
 import eu.redzoo.ml.deploy.Pipeline;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -22,7 +21,8 @@ public class EstimatorResource {
 	private final Estimator estimator;
 
 	EstimatorResource() throws IOException  {
-		this.estimator = Pipeline.load(ResourceUtils.getFile("classpath:trained.ser"));
+		var is = new ClassPathResource("trained.ser").getInputStream();
+		this.estimator = Pipeline.load(is);
 	}
 
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST)
