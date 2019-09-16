@@ -35,8 +35,8 @@ mvn clean install
 cp target/module-framework-rest-1.0.3.jar ../../rest_server.jar
 cd ../../..
 
-echo "build docker image"
+echo "build docker image $groupId"/"$artifactId":"$version"-"$train_version"
 docker build -t $groupId"/"$artifactId":"$version"-"$train_version .
 
-#rm -rf build
+rm -rf build
 
