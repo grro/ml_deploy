@@ -2,7 +2,7 @@
 
 # define pipeline to train
 groupId="eu.redzoo.ml"
-artifactId="pipeline-houseprice"
+artifactId="pipeline-estimate-houseprice"
 version="1.0.3"
 train_version="1568611516"
 
@@ -13,7 +13,7 @@ cd build
 # build server
 echo "copying framework-rest source to local dir"
 git clone --quiet https://github.com/grro/ml_deploy.git
-cd ml_deploy/module-framework-rest
+cd ml_deploy/module-pipeline-rest
 
 echo "download trained $artifactId pipeline to framework-rest/src/main/resources dir"
 trained=$artifactId-$version-$train_version".ser"

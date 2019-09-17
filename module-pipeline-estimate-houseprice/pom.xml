@@ -7,15 +7,15 @@
         <artifactId>parent</artifactId>
 		<version>1.0.3</version>
 	</parent>
-	<artifactId>pipeline-houseprice</artifactId>
-	<name>pipeline-houseprice</name>
+	<artifactId>pipeline-estimate-houseprice</artifactId>
+	<name>pipeline-estimate-houseprice</name>
 	<packaging>jar</packaging>
 	<description>Demo machine learning pipepline</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.redzoo.ml</groupId>
-			<artifactId>framework</artifactId>
+			<artifactId>pipeline</artifactId>
 			<version>1.0.3</version>
 		</dependency>
 

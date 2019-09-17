@@ -7,8 +7,8 @@
 		<artifactId>parent</artifactId>
 		<version>1.0.3</version>
 	</parent>
-	<artifactId>framework</artifactId>
-	<name>framework</name>
+	<artifactId>pipeline</artifactId>
+	<name>pipeline</name>
 	<packaging>jar</packaging>
 	<description>Demo machine learning pipepline</description>
 </project>

@@ -7,9 +7,9 @@
 		<artifactId>parent</artifactId>
 		<version>1.0.3</version>
 	</parent>
-	<artifactId>module-framework-rest</artifactId>
+	<artifactId>pipeline-rest</artifactId>
 	<packaging>jar</packaging>
-	<name>rest</name>
+	<name>pipeline-rest</name>
 	<description>Demo machine learning pipepline</description>
 
 	<properties>
@@ -36,7 +36,7 @@
 
 		<dependency>
 			<groupId>eu.redzoo.ml</groupId>
-			<artifactId>framework</artifactId>
+			<artifactId>pipeline</artifactId>
 			<version>1.0.3</version>
 		</dependency>
 
