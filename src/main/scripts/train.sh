@@ -7,7 +7,6 @@ version="1.0.3"
 
 echo "copying pipeline jar to local dir"
 pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/""${groupId//.//}""/""${artifactId//.//}""/$version/""${artifactId//.//}""-$version-jar-with-dependencies.jar?raw=true"
-echo $pipeline_app_uri
 curl -s -L $pipeline_app_uri --output pipeline.jar
 
 echo "copying ingest jar to local dir"

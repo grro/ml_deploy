@@ -15,7 +15,7 @@ echo "copying framework-rest source to local dir"
 git clone --quiet https://github.com/grro/ml_deploy.git
 cd ml_deploy/module-pipeline-rest
 
-echo "download trained $artifactId pipeline to framework-rest/src/main/resources dir"
+echo "download trained $artifactId pipeline to pipeline-rest/src/main/resources dir"
 trained=$artifactId-$version-$train_version".ser"
 trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained"?raw=true"
 curl -s -L $trained_uri --output trained.ser
@@ -34,7 +34,7 @@ echo $new_pom > pom.xml
 echo "build rest server jar including the specific pipeline artifacts"
 mvn -q clean install
 
-cp target/module-framework-rest-1.0.3.jar ../../rest_server.jar
+cp target/pipeline-rest-1.0.3.jar ../../rest_server.jar
 cd ../../..
 
 echo "build docker image $groupId"/"$artifactId":"$version"-"$train_version"
