@@ -18,7 +18,6 @@
 			<artifactId>pipeline</artifactId>
 			<version>1.0.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>nz.ac.waikato.cms.weka</groupId>
 			<artifactId>weka-stable</artifactId>
@@ -41,7 +40,7 @@
 							<archive>
 								<manifest>
 									<mainClass>
-										eu.redzoo.ml.deploy.houseprice.HousePricePipelineBuilder
+										eu.redzoo.ml.deploy.houseprice.pipeline.HousePricePipelineBuilder
 									</mainClass>
 								</manifest>
 							</archive>

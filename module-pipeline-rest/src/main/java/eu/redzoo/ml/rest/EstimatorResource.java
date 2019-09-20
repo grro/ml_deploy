@@ -2,7 +2,7 @@ package eu.redzoo.ml.rest;
 
 import com.google.common.collect.Lists;
 import eu.redzoo.ml.deploy.Estimator;
-import eu.redzoo.ml.deploy.Pipeline;
+import eu.redzoo.ml.deploy.pipeline.Pipeline;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;

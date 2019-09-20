@@ -1,35 +1,38 @@
 #!/bin/bash
 
-# define pipeline to train
-groupId="eu.redzoo.ml"
-artifactId="pipeline-estimate-houseprice"
-version="1.0.3"
+# define the pipeline version to train
+groupId=eu.redzoo.ml
+artifactId=pipeline-estimate-houseprice
+version=1.0.3
 
-echo "copying pipeline jar to local dir"
-pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/""${groupId//.//}""/""${artifactId//.//}""/$version/""${artifactId//.//}""-$version-jar-with-dependencies.jar?raw=true"
+echo copying ingest jar to local dir
+ingest_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/eu/redzoo/ml/ingest-housedata/2.2.3/ingest-housedata-2.2.3-jar-with-dependencies.jar?raw=true"
+curl -s -L $ingest_app_uri --output ingest2.jar
+
+echo copying pipeline jar to local dir
+pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/${groupId//.//}/${artifactId//.//}/$version/${artifactId//.//}-$version-jar-with-dependencies.jar?raw=true"
 curl -s -L $pipeline_app_uri --output pipeline.jar
 
-echo "copying ingest jar to local dir"
-ingest_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/eu/redzoo/ml/ingest-housedata/2.2.3/ingest-housedata-2.2.3-jar-with-dependencies.jar?raw=true"
-curl -s -L $ingest_app_uri --output ingest.jar
-
-echo "copying source data to local dir"
+echo copying source data to local dir
 train_data="https://github.com/grro/ml_deploy/blob/master/src/test/resources/train.csv?raw=true"
 curl -s -L $train_data --output train.csv
 
-echo "performing ingest jar consuming source data to generate houses.json and prices.json"
-java -jar ingest.jar train.csv houses.json prices.json
+echo performing ingest jar consuming source data and producing houses2.json and prices2.json
+java -jar ingest2.jar train.csv houses2.json prices2.json
 
-echo "performing pipeline jar to create and train a pipeline consuming houses.json and prices.json"
+echo performing pipeline jar to create and train a pipeline consuming houses2.json and prices2.json
 train_version=$(date +%s)
-trained=$artifactId-$version-$train_version".ser"
-java -jar pipeline.jar houses.json prices.json $trained
+trained=$artifactId-$version-$train_version.ser
+java -jar pipeline.jar houses2.json prices2.json $trained
 
-echo  "uploading trained pipeline https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
+echo uploading trained pipeline
+upload_uri=https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained
 
+
+echo $upload_uri
 rm $trained
 rm pipeline.jar
-rm ingest.jar
+rm ingest2.jar
 rm train.csv
-rm prices.json
-rm houses.json
+rm prices2.json
+rm houses2.json

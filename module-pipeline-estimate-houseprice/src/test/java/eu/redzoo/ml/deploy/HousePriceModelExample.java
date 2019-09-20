@@ -1,9 +1,9 @@
 package eu.redzoo.ml.deploy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.redzoo.ml.deploy.houseprice.AddMissingValuesTransformer;
-import eu.redzoo.ml.deploy.houseprice.CategoryToNumberTransformer;
-import eu.redzoo.ml.deploy.houseprice.HousePriceModel;
+import eu.redzoo.ml.deploy.houseprice.pipeline.AddMissingValuesTransformer;
+import eu.redzoo.ml.deploy.houseprice.pipeline.CategoryToNumberTransformer;
+import eu.redzoo.ml.deploy.houseprice.pipeline.HousePriceModel;
 
 import java.io.IOException;
 import java.util.List;

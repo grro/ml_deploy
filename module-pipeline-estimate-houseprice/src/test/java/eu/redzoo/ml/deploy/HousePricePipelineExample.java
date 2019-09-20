@@ -1,7 +1,8 @@
 package eu.redzoo.ml.deploy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.redzoo.ml.deploy.houseprice.HousePricePipelineBuilder;
+import eu.redzoo.ml.deploy.houseprice.pipeline.HousePricePipelineBuilder;
+import eu.redzoo.ml.deploy.pipeline.Pipeline;
 
 import java.io.File;
 import java.util.List;
