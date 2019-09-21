@@ -19,12 +19,18 @@ import java.util.List;
 @RestController
 public class RestfulEstimator {
 
+    private final String filename;
 	private final Estimator estimator;
 
 	RestfulEstimator(@Value("${filename}") String filename) throws IOException  {
 		this.estimator = Pipeline.load(new ClassPathResource(filename).getInputStream());
-		System.out.println("file " + filename + " laoded");
+		this.filename = filename;
 	}
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String info() {
+        return filename;
+    }
 
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST)
 	public Object predict(@RequestBody HashMap<String, Object> record) {

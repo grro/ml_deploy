@@ -1,7 +1,7 @@
 #!/bin/bash
 
 groupId="eu.redzoo.ml"
-artifactId="pipeline-houseprice"
+artifactId="pipeline-estimate-houseprice"
 version="1.0.3"
 train_version="1568611516"
 
