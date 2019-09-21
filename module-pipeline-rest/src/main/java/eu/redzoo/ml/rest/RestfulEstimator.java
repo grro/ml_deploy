@@ -27,7 +27,7 @@ public class RestfulEstimator {
 		this.filename = filename;
 	}
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
     public String info() {
         return filename;
     }
