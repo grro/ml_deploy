@@ -28,13 +28,13 @@ public class CategoryToNumberTransformer implements Transformer<Object, Double, 
 		return houses.stream().map(this::transform).collect(Collectors.toList());
 	}
 
-	private Map<String, Double> transform(Map<String, Object> features) {
-		return features.entrySet()
-                       .stream()
-                       .collect(Collectors.toMap(feature -> feature.getKey(),
-                                                 feature -> (feature.getValue() instanceof String)
-                                                               ? categoryToNumber.map(feature)
-                                                               : (Double) feature.getValue()));
+	private Map<String, Double> transform(Map<String, Object> house) {
+		return house.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(feature -> feature.getKey(),
+                                              feature -> (feature.getValue() instanceof String)
+                                                            ? categoryToNumber.map(feature)
+                                                            : (Double) feature.getValue()));
 	}
 
 	private static final class CategoryToNumberResolver implements Serializable {

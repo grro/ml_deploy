@@ -16,7 +16,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
-		<start-class>eu.redzoo.ml.rest.EstimatorResource</start-class>
+		<start-class>eu.redzoo.ml.rest.RestfulEstimator</start-class>
 	</properties>
 
 	<dependencies>

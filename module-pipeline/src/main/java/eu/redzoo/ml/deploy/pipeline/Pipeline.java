@@ -1,6 +1,6 @@
 package eu.redzoo.ml.deploy.pipeline;
 
-import com.google.common.collect.Lists;
+
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -12,60 +12,37 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class Pipeline<I, O, L> implements TrainableEstimator<I, L> {
+public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 
-	private final Transformer<I, O, L> transformer;
-	private final TrainableEstimator<O, L> model;
-	private final List<Map<String, Object>> trainMetrics = Lists.newArrayList();
+	private final TrainableEstimator<I, L> estimator;
 
-	private Pipeline(Transformer<I, O, L> transformer, TrainableEstimator<O, L> model) {
-		this.transformer = transformer;
-		this.model = model;
+	private Pipeline(TrainableEstimator<I, L> estimator) {
+		this.estimator = estimator;
 	}
 
 	public Map<String, Object> fit(List<Map<String, I>> records, List<L> labels) {
-		var immutableRecords = records.stream().map(Collections::unmodifiableMap).collect(Collectors.toList());
-
-		// first fit the transformer
-		var metricsTrain = transformer.fit(immutableRecords, labels);
-
-		// than the model
-		var transformed_records_and_labels = transformer.transform(immutableRecords, labels);
-		var metricsModel = model.fit(transformed_records_and_labels.getLeft(), transformed_records_and_labels.getRight());
-
-		var metrics = Maps.<String, Object>newHashMap();
-		metrics.put("trainDate", LocalDate.now().toString());
-		metrics.put("numExamples", transformed_records_and_labels.getKey().size());
-		metrics.putAll(metricsModel);
-		metrics.putAll(metricsTrain);
-		return metrics;
+		return estimator.fit(records, labels);
 	}
 
 	public  List<L> predict(List<Map<String, I>> records) {
-		return model.predict(transformer.transform(records));
-	}
-
-	public List<Map<String, Object>> getTrainMetrics() {
-		return Lists.newArrayList(trainMetrics);
+		return estimator.predict(records);
 	}
 
 	public void save(File file) throws IOException {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-			oos.writeObject(transformer);
-			oos.writeObject(model);
+			oos.writeObject(estimator);
 		}
 	}
 
-	public static <I, O, L> Pipeline<I, O, L> load(File file) throws IOException {
+	public static <I, O, L> Pipeline<I, L> load(File file) throws IOException {
 	    return load(new FileInputStream(file));
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <I, O, L> Pipeline<I, O, L> load(InputStream is) throws IOException {
+	public static <I, O, L> Pipeline<I, L> load(InputStream is) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(is)) {
-            Transformer<I, O, L> transformer = (Transformer<I, O, L> ) ois.readObject();
-			TrainableEstimator<O, L> model = (TrainableEstimator<O, L>) ois.readObject();
-            return new Pipeline<>(transformer, model);
+			TrainableEstimator<I, L> estimator = (TrainableEstimator<I, L>) ois.readObject();
+		    return new Pipeline<>(estimator);
         } catch (ClassNotFoundException cnfe) {
             throw new RuntimeException(cnfe);
         }
@@ -87,8 +64,8 @@ public class Pipeline<I, O, L> implements TrainableEstimator<I, L> {
 			return new Pipeline.Builder<>(new TransformerChain<>(transformer, nextTransformer));
 		}
 
-		public Pipeline<I, O, L> add(TrainableEstimator<O, L> model) {
-			return new Pipeline<I, O, L>(transformer, model);
+		public Pipeline<I, L> add(TrainableEstimator<O, L> model) {
+			return new Pipeline<I, L>(new PipelineEstimator<>(transformer, model));
 		}
 	}
 
@@ -119,6 +96,39 @@ public class Pipeline<I, O, L> implements TrainableEstimator<I, L> {
 			var metrics = Maps.newHashMap(metrics1);
 			metrics.putAll(metrics2);
 			return metrics;
+		}
+	}
+
+
+	private static final class PipelineEstimator<I, O, L> implements TrainableEstimator<I, L> {
+		private final Transformer<I, O, L> transformer;
+		private final TrainableEstimator<O, L> model;
+
+		private PipelineEstimator(Transformer<I, O, L> transformer, TrainableEstimator<O, L> model) {
+			this.transformer = transformer;
+			this.model = model;
+		}
+
+		public Map<String, Object> fit(List<Map<String, I>> records, List<L> labels) {
+			var immutableRecords = records.stream().map(Collections::unmodifiableMap).collect(Collectors.toList());
+
+			// first fit the transformer
+			var metricsTrain = transformer.fit(immutableRecords, labels);
+
+			// than the model
+			var transformed_records_and_labels = transformer.transform(immutableRecords, labels);
+			var metricsModel = model.fit(transformed_records_and_labels.getLeft(), transformed_records_and_labels.getRight());
+
+			var metrics = Maps.<String, Object>newHashMap();
+			metrics.put("trainDate", LocalDate.now().toString());
+			metrics.put("numExamples", transformed_records_and_labels.getKey().size());
+			metrics.putAll(metricsModel);
+			metrics.putAll(metricsTrain);
+			return metrics;
+		}
+
+		public  List<L> predict(List<Map<String, I>> records) {
+			return model.predict(transformer.transform(records));
 		}
 	}
 }

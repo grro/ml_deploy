@@ -7,4 +7,5 @@ import java.util.Map;
 public interface Trainable<I, L> extends Serializable {
 
 	Map<String, Object> fit(List<Map<String, I>> records, List<L> labels);
+
 }
