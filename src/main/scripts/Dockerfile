@@ -1,7 +1,8 @@
-ARG pipeline_filename
-ENV filename_param="--filename=$pipieline_filename"
-
 FROM openjdk:11
+
+ARG pipeline_filename
+ENV filename_param="--filename=$pipeline_filename"
+
 COPY build/estimation-server.jar /etc/restserver/estimation-server.jar
 
 WORKDIR /etc/restserver/

@@ -23,6 +23,7 @@ public class RestfulEstimator {
 
 	RestfulEstimator(@Value("${filename}") String filename) throws IOException  {
 		this.estimator = Pipeline.load(new ClassPathResource(filename).getInputStream());
+		System.out.println("file " + filename + " laoded");
 	}
 
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST)

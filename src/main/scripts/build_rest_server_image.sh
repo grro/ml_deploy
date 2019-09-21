@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# export DOCKER_HOST=localhost:2375
+
 # define pipeline to train
 groupId="eu.redzoo.ml"
 artifactId="pipeline-estimate-houseprice"
@@ -38,7 +40,7 @@ cp target/pipeline-rest-1.0.3.jar ../../estimation-server.jar
 cd ../../..
 
 echo "build docker image $groupId"/"$artifactId":"$version"-"$train_version"
-echo docker build --build-arg pipeline_filename $trained -t $groupId"/"$artifactId":"$version"-"$train_version .
+docker build --build-arg pipeline_filename=$trained -t $groupId"/"$artifactId":"$version"-"$train_version .
 
-rm -rf build
+#rm -rf build
 
