@@ -42,5 +42,5 @@ cd ../../..
 echo "build docker image $groupId"/"$artifactId":"$version"-"$train_version"
 docker build --build-arg pipeline_filename=$trained -t $groupId"/"$artifactId":"$version"-"$train_version .
 
-#rm -rf build
+rm -rf build
 

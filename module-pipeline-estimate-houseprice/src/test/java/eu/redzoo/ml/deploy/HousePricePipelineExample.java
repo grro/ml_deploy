@@ -19,6 +19,7 @@ public class HousePricePipelineExample {
 
 		var predictPipeline = new HousePricePipelineBuilder().newPipeline();
 		predictPipeline.fit(houses, prices);
+		System.out.println(predictPipeline);
 		predictPipeline.save(new File("test.ser"));
 
 		predictPipeline = Pipeline.load(new File("test.ser"));

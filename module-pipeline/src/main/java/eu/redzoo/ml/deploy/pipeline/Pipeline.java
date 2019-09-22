@@ -1,10 +1,12 @@
 package eu.redzoo.ml.deploy.pipeline;
 
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -15,13 +17,16 @@ import java.util.stream.Collectors;
 public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 
 	private final TrainableEstimator<I, L> estimator;
+	private final Map<Instant, Map<String, Object>> trainRuns = Maps.newHashMap();
 
 	private Pipeline(TrainableEstimator<I, L> estimator) {
 		this.estimator = estimator;
 	}
 
 	public Map<String, Object> fit(List<Map<String, I>> records, List<L> labels) {
-		return estimator.fit(records, labels);
+		var metrics = estimator.fit(records, labels);
+		trainRuns.put(Instant.now(), metrics);
+		return metrics;
 	}
 
 	public  List<L> predict(List<Map<String, I>> records) {
@@ -47,6 +52,17 @@ public class Pipeline<I, L> implements TrainableEstimator<I, L> {
             throw new RuntimeException(cnfe);
         }
     }
+
+	@Override
+	public String toString() {
+		var info = new StringBuffer();
+		trainRuns.forEach((timestamp, metrics) -> {
+			info.append("\n\ntrain run " + timestamp + "\n" + Joiner.on("\n")
+									    				  		    .withKeyValueSeparator("=")
+														            .join(metrics));
+		});
+		return info.toString();
+	}
 
 	public static <I, O, L> Pipeline.Builder<I, O, L> add(Transformer<I, O, L> transformer) {
 		return new Pipeline.Builder<I, O, L>(transformer);

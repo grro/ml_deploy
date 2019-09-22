@@ -27,11 +27,6 @@ public class RestfulEstimator {
 		this.filename = filename;
 	}
 
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public String info() {
-        return filename;
-    }
-
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST)
 	public Object predict(@RequestBody HashMap<String, Object> record) {
 		return batchPredict(Lists.newArrayList(record)).get(0);
@@ -43,7 +38,13 @@ public class RestfulEstimator {
 		return estimator.predict(records);
 	}
 
+	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	public String info() {
+		return filename + "\n" + estimator.toString();
+	}
+
 	public static void main(String[] args) {
+		// e.g. java -jar estimation-server.jar --filename=pipeline-estimate-houseprice-1.0.3-1568611516.ser
 		SpringApplication.run(RestfulEstimator.class, args);
 	}
 }
