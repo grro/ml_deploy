@@ -5,5 +5,5 @@ artifactId="pipeline-estimate-houseprice"
 version="1.0.3"
 train_version="1568611516"
 
-echo "running docker image $groupId"/"$artifactId":"$version"-"$train_version"
+echo docker run -p 8080:8080 $groupId"/"$artifactId":"$version"-"$train_version
 docker run -p 8080:8080 $groupId"/"$artifactId":"$version"-"$train_version

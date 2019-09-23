@@ -1,9 +1,15 @@
-FROM openjdk:11
+FROM openjdk:11.0.4-jdk-slim-buster
 
-ARG pipeline_filename
-ENV filename_param="--filename=$pipeline_filename"
+# build time params (only available during 'docker build')
+ARG arg_server_jar
+ARG arg_pipeline_filename
 
-COPY build/estimation-server.jar /etc/restserver/estimation-server.jar
+# runtime params
+ENV filename_param="--filename=$arg_pipeline_filename"
+ENV server_jar=$arg_server_jar
 
-WORKDIR /etc/restserver/
-CMD java -jar estimation-server.jar $filename_param
+# copying the executable server jar file
+COPY build/$server_jar /etc/restserver/$server_jar
+
+# default command, which will be executed on 'docker run'
+CMD java -jar /etc/restserver/$server_jar $filename_param

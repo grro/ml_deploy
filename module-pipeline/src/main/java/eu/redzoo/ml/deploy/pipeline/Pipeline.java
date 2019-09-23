@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 
 	private final TrainableEstimator<I, L> estimator;
-	private final Map<Instant, Map<String, Object>> trainRuns = Maps.newHashMap();
+	private final Map<Instant, Map<String, Object>> trainRuns;
 
-	private Pipeline(TrainableEstimator<I, L> estimator) {
+	private Pipeline(TrainableEstimator<I, L> estimator, Map<Instant, Map<String, Object>> trainRuns) {
 		this.estimator = estimator;
+		this.trainRuns = Maps.newHashMap(trainRuns);
 	}
 
 	public Map<String, Object> fit(List<Map<String, I>> records, List<L> labels) {
@@ -36,6 +37,7 @@ public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 	public void save(File file) throws IOException {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
 			oos.writeObject(estimator);
+			oos.writeObject(trainRuns);
 		}
 	}
 
@@ -47,7 +49,8 @@ public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 	public static <I, O, L> Pipeline<I, L> load(InputStream is) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(is)) {
 			TrainableEstimator<I, L> estimator = (TrainableEstimator<I, L>) ois.readObject();
-		    return new Pipeline<>(estimator);
+			Map<Instant, Map<String, Object>> trainRuns = (Map<Instant, Map<String, Object>>) ois.readObject();
+		    return new Pipeline<>(estimator, trainRuns);
         } catch (ClassNotFoundException cnfe) {
             throw new RuntimeException(cnfe);
         }
@@ -57,7 +60,7 @@ public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 	public String toString() {
 		var info = new StringBuffer();
 		trainRuns.forEach((timestamp, metrics) -> {
-			info.append("\n\ntrain run " + timestamp + "\n" + Joiner.on("\n")
+			info.append("\ntrain run " + timestamp + "\n" + Joiner.on("\n")
 									    				  		    .withKeyValueSeparator("=")
 														            .join(metrics));
 		});
@@ -81,7 +84,7 @@ public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 		}
 
 		public Pipeline<I, L> add(TrainableEstimator<O, L> model) {
-			return new Pipeline<I, L>(new PipelineEstimator<>(transformer, model));
+			return new Pipeline<I, L>(new PipelineEstimator<>(transformer, model), Map.of());
 		}
 	}
 
