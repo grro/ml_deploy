@@ -139,7 +139,6 @@ public class Pipeline<I, L> implements TrainableEstimator<I, L> {
 			var metricsModel = model.fit(transformed_records_and_labels.getLeft(), transformed_records_and_labels.getRight());
 
 			var metrics = Maps.<String, Object>newHashMap();
-			metrics.put("trainDate", Instant.now().toString());
 			metrics.put("numExamples", transformed_records_and_labels.getKey().size());
 			metrics.putAll(metricsModel);
 			metrics.putAll(metricsTrain);
