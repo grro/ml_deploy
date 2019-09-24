@@ -10,13 +10,15 @@ mkdir build
 cd build
 
 echo copying framework-rest source to local dir
-git clone --quiet -b1.0.3 https://github.com/grro/ml_deploy.git
+git clone --quiet -b1.0.3.1 https://github.com/grro/ml_deploy.git
 cd ml_deploy/module-pipeline-rest
 
 echo download trained pipeline to pipeline-rest/src/main/resources dir
-trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$artifactId-$version-$train_version".ser?raw=true"
+trained=$artifactId-$version-$train_version".ser"
+trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained"?raw=true"
 mkdir src/main/resources
-curl -s -L $trained_uri --output src/main/resources/pipeline.ser
+curl -s -L $trained_uri --output src/main/resources/$trained
+echo "filename: $trained" > src/main/resources/application.yml
 
 echo adding the pipeline artefact id to framework-rest pom.xml file
 pom=$(<pom.xml)
@@ -35,5 +37,5 @@ cd ../../..
 echo build docker image
 docker build --build-arg arg_server_jar=$server_jar -t $groupId"/"$artifactId":"$version"-"$train_version .
 
-rm -rf build
+#rm -rf build
 

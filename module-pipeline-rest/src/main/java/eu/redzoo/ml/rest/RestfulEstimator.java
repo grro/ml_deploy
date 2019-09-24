@@ -19,11 +19,10 @@ import java.util.List;
 @SpringBootApplication
 @RestController
 public class RestfulEstimator {
-
 	private final Estimator estimator;
 
-	RestfulEstimator() throws IOException  {
-		this.estimator = Pipeline.load(new ClassPathResource("pipeline.ser").getInputStream());
+	RestfulEstimator(@Value("${filename}") String pipelineInstanceFilename) throws IOException  {
+		this.estimator = Pipeline.load(new ClassPathResource(pipelineInstanceFilename).getInputStream());
 	}
 
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +30,6 @@ public class RestfulEstimator {
 		return batchPredict(Lists.newArrayList(record)).get(0);
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/predictions", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Object> batchPredict(@RequestBody ArrayList<HashMap<String, Object>> records) {
 		return estimator.predict(records);
