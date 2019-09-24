@@ -20,12 +20,10 @@ import java.util.List;
 @RestController
 public class RestfulEstimator {
 
-    private final String filename;
 	private final Estimator estimator;
 
-	RestfulEstimator(@Value("${filename}") String filename) throws IOException  {
-		this.estimator = Pipeline.load(new ClassPathResource(filename).getInputStream());
-		this.filename = filename;
+	RestfulEstimator() throws IOException  {
+		this.estimator = Pipeline.load(new ClassPathResource("pipeline.ser").getInputStream());
 	}
 
 	@RequestMapping(value = "/prediction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,11 +39,11 @@ public class RestfulEstimator {
 
 	@RequestMapping(value = "/info", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String info() {
-		return filename + "\n" + estimator.toString();
+		return estimator.toString();
 	}
 
 	public static void main(String[] args) {
-		// e.g. java -jar estimation-server.jar --filename=pipeline-estimate-houseprice-1.0.3-1568611516.ser
+		// e.g. java -jar server-pipeline-estimate-houseprice-1.0.3-1568611516.jar
 		SpringApplication.run(RestfulEstimator.class, args);
 	}
 }
