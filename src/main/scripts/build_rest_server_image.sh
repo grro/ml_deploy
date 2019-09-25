@@ -10,7 +10,8 @@ mkdir build
 cd build
 
 echo copying framework-rest source to local dir
-git clone --quiet -b1.0.3.1 https://github.com/grro/ml_deploy.git
+git clone --quidocker ps
+ https://github.com/grro/ml_deploy.git
 cd ml_deploy/module-pipeline-rest
 
 echo download trained pipeline to pipeline-rest/src/main/resources dir
@@ -37,5 +38,4 @@ cd ../../..
 echo build docker image
 docker build --build-arg arg_server_jar=$server_jar -t $groupId"/"$artifactId":"$version"-"$train_version .
 
-#rm -rf build
-
+rm -rf build

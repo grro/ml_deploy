@@ -1,4 +1,4 @@
-FROM openjdk:11.0.4-jdk-slim-buster
+FROM openjdk:13-jdk-slim-buster
 
 # build time params (only available during 'docker build')
 ARG arg_server_jar
