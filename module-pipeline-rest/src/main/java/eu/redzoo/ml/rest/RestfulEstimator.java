@@ -41,7 +41,7 @@ public class RestfulEstimator {
 	}
 
 	public static void main(String[] args) {
-		// e.g. java -jar server-pipeline-estimate-houseprice-1.0.3-1568611516.jar
+		// e.g. java -jar server-pipeline-estimate-houseprice-1.0.3-1568611516.jar --filename=pipeline-estimate-houseprice-1.0.3-1568611516.ser
 		SpringApplication.run(RestfulEstimator.class, args);
 	}
 }
