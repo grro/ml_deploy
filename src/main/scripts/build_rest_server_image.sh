@@ -14,11 +14,11 @@ git clone --quiet https://github.com/grro/ml_deploy.git
 cd ml_deploy/module-pipeline-rest
 
 echo download trained pipeline to pipeline-rest/src/main/resources dir
-trained=$artifactId-$version-$train_version".ser"
-trained_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$trained"?raw=true"
+pipeline_instance=$artifactId-$version-$train_version".ser"
+pipeline_instance_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$pipeline_instance"?raw=true"
 mkdir src/main/resources
-curl -s -L $trained_uri --output src/main/resources/$trained
-echo "filename: $trained" > src/main/resources/application.yml
+curl -s -L $pipeline_instance_uri --output src/main/resources/$pipeline_instance
+echo "filename: $pipeline_instance" > src/main/resources/application.yml
 
 echo adding the pipeline artefact id to framework-rest pom.xml file
 pom=$(<pom.xml)

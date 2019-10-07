@@ -22,11 +22,11 @@ java -jar ingest2.jar train.csv houses2.json prices2.json
 
 echo performing pipeline jar to create and train a pipeline consuming houses2.json and prices2.json
 enhanced_version=$version-$(date +%s)
-trained=$artifactId-$enhanced_version.ser
-java -jar pipeline.jar houses2.json prices2.json $trained
+pipeline_instance=$artifactId-$enhanced_version.ser
+java -jar pipeline.jar houses2.json prices2.json $pipeline_instance
 
 echo uploading trained pipeline
-echo curl -X PUT --data-binary "@$trained" "https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/${groupId//.//}/${artifactId//.//}/$enhanced_version/$trained"
+echo curl -X PUT --data-binary "@$pipeline_instance" "https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/${groupId//.//}/${artifactId//.//}/$enhanced_version/$trained"
 
 rm $trained
 rm pipeline.jar
