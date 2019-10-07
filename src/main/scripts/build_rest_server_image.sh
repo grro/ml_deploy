@@ -10,7 +10,7 @@ mkdir build
 cd build
 
 echo copying framework-rest source to local dir
-git clone --quiet https://github.com/grro/ml_deploy.git
+git clone --quiet -b 1.0.3.3 https://github.com/grro/ml_deploy.git
 cd ml_deploy/module-pipeline-rest
 
 echo download trained pipeline to pipeline-rest/src/main/resources dir
