@@ -13,7 +13,7 @@ echo copying pipeline jar to local dir
 pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/${groupId//.//}/${artifactId//.//}/$version/${artifactId//.//}-$version-jar-with-dependencies.jar?raw=true"
 curl -s -L $pipeline_app_uri --output pipeline.jar
 
-echo performing ingest jar to produce houses.json and prices.json
+echo performing ingest jar to produce houses.json and prices.json. Internally http://jse.amstat.org/v19n3/decock/AmesHousing.xls will be fetched
 java -jar ingest.jar train.csv houses.json prices.json
 
 echo performing pipeline jar to create and train a pipeline consuming houses.json and prices.json
