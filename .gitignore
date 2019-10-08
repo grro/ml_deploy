@@ -25,3 +25,5 @@
 /module-pipeline-houseprice/src/test/resources/labels.json
 /module-pipeline-rest/src/test/resources/trained.ser
 /src/main/scripts/introspect.sh
+/module-pipeline-estimate-houseprice/src/test/resources/prices.json
+/module-pipeline-estimate-houseprice/src/test/resources/houses.json
