@@ -23,3 +23,5 @@
 /src/main/scripts/build
 /module-pipeline-houseprice/src/test/resources/records.json
 /module-pipeline-houseprice/src/test/resources/labels.json
+/module-pipeline-rest/src/test/resources/trained.ser
+/src/main/scripts/introspect.sh
