@@ -14,7 +14,7 @@ cd ml_deploy/module-pipeline-rest
 
 echo download trained pipeline to pipeline-rest/src/main/resources dir
 pipeline_instance=$artifactId-$version-$train_version".ser"
-pipeline_instance_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$pipeline_instance"?raw=true"
+pipeline_instance_uri="https://github.com/grro/ml_deploy/raw/master/example-repo/model-releases/"${groupId//.//}/${artifactId//.//}/$version-$train_version/$pipeline_instance
 mkdir src/main/resources
 curl -s -L $pipeline_instance_uri --output src/main/resources/$pipeline_instance
 echo "filename: $pipeline_instance" > src/main/resources/application.yml
