@@ -13,8 +13,8 @@ import java.util.Map;
 public class HousePricePipelineExample {
 
 	public static void main(String[] args) throws Exception  {
-		var recordsInputStream = HousePriceModelExample.class.getClassLoader().getResourceAsStream("records.json");
-		var labelsInputStream = HousePriceModelExample.class.getClassLoader().getResourceAsStream("labels.json");
+		var recordsInputStream = HousePriceModelExample.class.getClassLoader().getResourceAsStream("houses.json");
+		var labelsInputStream = HousePriceModelExample.class.getClassLoader().getResourceAsStream("prices.json");
 		List<Map<String, Object>> houses = List.of(new ObjectMapper().readValue(recordsInputStream, Map[].class));
 		List<Double> prices = List.of(new ObjectMapper().readValue(labelsInputStream, Double[].class));
 

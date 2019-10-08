@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.*;
@@ -11,12 +13,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 
@@ -38,28 +38,26 @@ public class Ingest {
 	}
 
 	public int process(URL excelSheetURL, String recordsFilename, String labelsFilename) throws IOException {
-		var houses = new ExcelReader().read(excelSheetURL, House.class);
-
-		new ObjectMapper().writeValue(new File(recordsFilename), houses);
-		var prices = houses.stream().map(house -> house.SalePrice).collect(Collectors.toList());
-		new ObjectMapper().writeValue(new File(labelsFilename), prices);
-
-		return houses.size();
+		var housesAndPrices = new ExcelReader().read(excelSheetURL);
+		new ObjectMapper().writeValue(new File(recordsFilename), housesAndPrices.getLeft());
+		new ObjectMapper().writeValue(new File(labelsFilename), housesAndPrices.getRight());
+		return housesAndPrices.getLeft().size();
 	}
 
 
 
 	private static class ExcelReader {
-		public <T> List<T> read(URL excelSheetURL, Class<T> clazz) {
+		public Pair<List<House>, List<Double>> read(URL excelSheetURL) {
 			try (var is = excelSheetURL.openStream()) {
-				return read(is, clazz);
+				return read(is);
 			} catch (IOException ioe) {
 				throw new UncheckedIOException(ioe);
 			}
 		}
 
-		private <T> List<T> read(InputStream is, Class<T> clazz) throws IOException {
-			List<T> rows = Lists.newArrayList();
+		private Pair<List<House>, List<Double>> read(InputStream is) throws IOException {
+			List<House> houses = Lists.newArrayList();
+            List<Double> prices = Lists.newArrayList();
 
 			Iterator<Row> rowIterator = WorkbookFactory.create(is).getSheetAt(0).rowIterator();
 			var headerRow = rowIterator.next();
@@ -70,31 +68,31 @@ public class Ingest {
 
 			DataFormatter dataFormatter = new DataFormatter();
 			while (rowIterator.hasNext()) {
-				var row = rowIterator.next();
-				try {
-					var object = clazz.getDeclaredConstructor().newInstance();
-					for (var field : clazz.getDeclaredFields()) {
-						var columnName = ((Field) field.getAnnotation(Field.class)).name();
-						var value = dataFormatter.formatCellValue(row.getCell(columnNameIndex.get(columnName)));
-						try {
-							if (Strings.isNullOrEmpty(value)) {
-								field.set(object, null);
-							} else {
-								if (field.getType() == Double.class) {
-									field.set(object, Double.valueOf(value));
-								} else {
-									field.set(object, value);
-								}
-							}
-						} catch (IllegalAccessException ignore) {
-						}
-					}
-					rows.add(object);
-				} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					throw new RuntimeException(e);
-				}
+                var row = rowIterator.next();
+
+                var price = dataFormatter.formatCellValue(row.getCell(columnNameIndex.get("SalePrice")));
+                prices.add(Double.valueOf(price));
+
+                var house = new House();
+                for (var field : house.getClass().getDeclaredFields()) {
+                    var columnName = ((Field) field.getAnnotation(Field.class)).name();
+                    var value = dataFormatter.formatCellValue(row.getCell(columnNameIndex.get(columnName)));
+                    try {
+                        if (Strings.isNullOrEmpty(value)) {
+                            field.set(house, null);
+                        } else {
+                            if (field.getType() == Double.class) {
+                                field.set(house, Double.valueOf(value));
+                            } else {
+                                field.set(house, value);
+                            }
+                        }
+                    } catch (IllegalAccessException ignore) {
+                    }
+                }
+                houses.add(house);
 			}
-			return rows;
+			return ImmutablePair.of(houses, prices);
 		}
 	}
 
@@ -191,8 +189,5 @@ public class Ingest {
 
 		@Field(name = "Yr Sold")
 		public Double YrSold;
-
-		@Field(name = "SalePrice")
-		public Double SalePrice;
 	}
 }
