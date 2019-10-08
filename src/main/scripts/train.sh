@@ -13,11 +13,7 @@ echo copying pipeline jar to local dir
 pipeline_app_uri="https://github.com/grro/ml_deploy/blob/master/example-repo/lib-releases/${groupId//.//}/${artifactId//.//}/$version/${artifactId//.//}-$version-jar-with-dependencies.jar?raw=true"
 curl -s -L $pipeline_app_uri --output pipeline.jar
 
-echo copying source data to local dir
-train_data="https://github.com/grro/ml_deploy/blob/master/src/test/resources/train.csv?raw=true"
-curl -s -L $train_data --output train.csv
-
-echo performing ingest jar consuming source data and producing houses2.json and prices2.json
+echo performing ingest jar producing houses2.json and prices2.json
 java -jar ingest2.jar train.csv houses2.json prices2.json
 
 echo performing pipeline jar to create and train a pipeline consuming houses2.json and prices2.json
@@ -31,6 +27,5 @@ echo curl -X PUT --data-binary "@$pipeline_instance" "https://github.com/grro/ml
 rm $trained
 rm pipeline.jar
 rm ingest2.jar
-rm train.csv
 rm prices2.json
 rm houses2.json

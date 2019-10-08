@@ -1,157 +1,198 @@
 package eu.redzoo.ml.deploy.ingest;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import com.google.common.collect.Maps;
+import org.apache.poi.ss.usermodel.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 
 public class Ingest {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length == 0) {
-			System.out.println("usage Ingest <data in filename> <records out filename> <labels out filename>");
+			System.out.println("usage Ingest <records out filename> <labels out filename>");
 			System.exit(-1);
 		}
-
-		var sourceFilename = args[0].trim();   // e.g. the train csv of https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data
 		var recordsFilename = args.length > 1 ? args[1].trim() : "records.json";
 		var labelsFilename = args.length > 2 ? args[2] .trim(): "labels.json";
+		var excelSheetURL = new URL("http://jse.amstat.org/v19n3/decock/AmesHousing.xls");
 
-		var sourcefile = new File(sourceFilename);
- 		var lines = Files.readAllLines(sourcefile.toPath());
-		var housesAndPrices = new HouseTrainDataLoader().load(House.class, lines);
-
-		new ObjectMapper().writeValue(new File(recordsFilename), housesAndPrices.getLeft());
-		new ObjectMapper().writeValue(new File(labelsFilename), housesAndPrices.getRight());
+		var numRows = new Ingest().process(excelSheetURL, recordsFilename, labelsFilename);
 
 		System.out.println(new File(recordsFilename).getName() + ", " + new File(labelsFilename).getName() +
-				           " created with " + housesAndPrices.getLeft().size() + " entries");
+				" created with " + numRows + " entries");
+	}
+
+	public int process(URL excelSheetURL, String recordsFilename, String labelsFilename) throws IOException {
+		var houses = new ExcelReader().read(excelSheetURL, House.class);
+
+		new ObjectMapper().writeValue(new File(recordsFilename), houses);
+		var prices = houses.stream().map(house -> house.SalePrice).collect(Collectors.toList());
+		new ObjectMapper().writeValue(new File(labelsFilename), prices);
+
+		return houses.size();
 	}
 
 
-	private static final class HouseTrainDataLoader {
 
+	private static class ExcelReader {
+		public <T> List<T> read(URL excelSheetURL, Class<T> clazz) {
+			try (var is = excelSheetURL.openStream()) {
+				return read(is, clazz);
+			} catch (IOException ioe) {
+				throw new UncheckedIOException(ioe);
+			}
+		}
 
-		public Pair<List<House>, List<Double>> load(Class targetClass, List<String> lines) {
-			List<House> houses = Lists.newArrayList();
-			List<Double> prices = Lists.newArrayList();
+		private <T> List<T> read(InputStream is, Class<T> clazz) throws IOException {
+			List<T> rows = Lists.newArrayList();
 
-			for (String line : lines) {
+			Iterator<Row> rowIterator = WorkbookFactory.create(is).getSheetAt(0).rowIterator();
+			var headerRow = rowIterator.next();
+			Map<String, Integer> columnNameIndex = Maps.newHashMap();
+			for (int i = 0; i < headerRow.getPhysicalNumberOfCells(); i++) {
+				columnNameIndex.put(headerRow.getCell(i).getStringCellValue(), i);
+			}
+
+			DataFormatter dataFormatter = new DataFormatter();
+			while (rowIterator.hasNext()) {
+				var row = rowIterator.next();
 				try {
-					String[] attributes = line.split(",");
-
-					var house = new House();
-					house.MSSubClass = readDouble(attributes, 1);
-					house.MSZoning = readText(attributes, 2);
-					house.LotFrontage = readDouble(attributes, 3);
-					house.LotArea = readDouble(attributes, 4);
-					house.Neighborhood = readText(attributes, 12);
-					house.OverallQual = readDouble(attributes, 17);
-					house.OverallCond = readDouble(attributes, 18);
-					house.YearBuilt = readDouble(attributes, 19);
-					house.YearRemodAdd = readDouble(attributes, 20);
-					house.RoofStyle = readText(attributes, 21);
-					house.BsmtQual = readText(attributes, 30);
-					house.BsmtExposure = readText(attributes, 32);
-					house.HeatingQC = readText(attributes, 40);
-					house.CentralAir = readText(attributes, 41);
-					house.FirstFlrSF = readDouble(attributes, 43);
-					house.SecondFlrSF = readDouble(attributes, 44);
-					house.GrLivArea = readDouble(attributes, 46);
-					house.BsmtFullBath = readDouble(attributes, 47);
-					house.BedroomAbvGr = readDouble(attributes, 51);
-					house.KitchenQual = readText(attributes, 53);
-					house.TotRmsAbvGrd = readDouble(attributes, 54);
-					house.Fireplaces = readDouble(attributes, 56);
-					house.FireplaceQu = readText(attributes, 57);
-					house.GarageType = readText(attributes, 58);
-					house.GarageFinish = readText(attributes, 60);
-					house.GarageArea = readDouble(attributes, 62);
-					house.MiscVal = readDouble(attributes, 75);
-					house.YrSold = readDouble(attributes, 77);
-
-					houses.add(house);
-
-					prices.add(Double.parseDouble(attributes[80]));
-				} catch (Exception e) {
-					System.out.println("ignoring line " + line);
+					var object = clazz.getDeclaredConstructor().newInstance();
+					for (var field : clazz.getDeclaredFields()) {
+						var columnName = ((Field) field.getAnnotation(Field.class)).name();
+						var value = dataFormatter.formatCellValue(row.getCell(columnNameIndex.get(columnName)));
+						try {
+							if (Strings.isNullOrEmpty(value)) {
+								field.set(object, null);
+							} else {
+								if (field.getType() == Double.class) {
+									field.set(object, Double.valueOf(value));
+								} else {
+									field.set(object, value);
+								}
+							}
+						} catch (IllegalAccessException ignore) {
+						}
+					}
+					rows.add(object);
+				} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					throw new RuntimeException(e);
 				}
 			}
-			return ImmutablePair.of(houses, prices);
+			return rows;
 		}
+	}
 
-		private Double readDouble(String[] attributes, int pos) {
-			return attributes[pos].equals("NA") ? null : Double.parseDouble(attributes[pos]);
-		}
 
-		private String readText(String[] attributes, int pos) {
-			return attributes[pos].equals("NA") ? null : attributes[pos];
-		}
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	public @interface Field {
+		public String name() default "";
 	}
 
 
 	public static class House {
 
-		public  Double MSSubClass;
+		@Field(name = "MS SubClass")
+		public Double MSSubClass;
 
+		@Field(name = "MS Zoning")
 		public String MSZoning;
 
+		@Field(name = "Lot Frontage")
 		public Double LotFrontage;
 
+		@Field(name = "Lot Area")
 		public Double LotArea;
 
+		@Field(name = "Neighborhood")
 		public String Neighborhood;
 
+		@Field(name = "Overall Qual")
 		public Double OverallQual;
 
+		@Field(name = "Overall Cond")
 		public Double OverallCond;
 
+		@Field(name = "Year Built")
 		public Double YearBuilt;
 
+		@Field(name = "Year Remod/Add")
 		public Double YearRemodAdd;
 
+		@Field(name = "Roof Style")
 		public String RoofStyle;
 
+		@Field(name = "Bsmt Qual")
 		public String BsmtQual;
 
+		@Field(name = "Bsmt Exposure")
 		public String BsmtExposure;
 
+		@Field(name = "Heating QC")
 		public String HeatingQC;
 
+		@Field(name = "Central Air")
 		public String CentralAir;
 
+		@Field(name = "1st Flr SF")
 		public Double FirstFlrSF;
 
+		@Field(name = "2nd Flr SF")
 		public Double SecondFlrSF;
 
+		@Field(name = "Gr Liv Area")
 		public Double GrLivArea;
 
+		@Field(name = "Bsmt Full Bath")
 		public Double BsmtFullBath;
 
+		@Field(name = "Bedroom AbvGr")
 		public Double BedroomAbvGr;
 
+		@Field(name = "Kitchen Qual")
 		public String KitchenQual;
 
+		@Field(name = "TotRms AbvGrd")
 		public Double TotRmsAbvGrd;
 
+		@Field(name = "Fireplaces")
 		public Double Fireplaces;
 
+		@Field(name = "Fireplace Qu")
 		public String FireplaceQu;
 
+		@Field(name = "Garage Type")
 		public String GarageType;
 
+		@Field(name = "Garage Finish")
 		public String GarageFinish;
 
+		@Field(name = "Garage Area")
 		public Double GarageArea;
 
+		@Field(name = "Misc Val")
 		public Double MiscVal;
 
+		@Field(name = "Yr Sold")
 		public Double YrSold;
+
+		@Field(name = "SalePrice")
+		public Double SalePrice;
 	}
 }
