@@ -1,6 +1,6 @@
 # Deploying machine learning models example
  
- This project includes non-productive example code for illustration purposes.
+ This repo includes non-productive example code for illustration purposes.
  
  
  | artifact     | description |
