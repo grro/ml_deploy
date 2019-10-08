@@ -24,7 +24,7 @@ java -jar pipeline.jar houses.json prices.json $pipeline_instance
 echo uploading trained pipeline
 echo curl -X PUT --data-binary "@$pipeline_instance" "https://github.com/grro/ml_deploy/blob/master/example-repo/model-releases/${groupId//.//}/${artifactId//.//}/$enhanced_version/$trained"
 
-#rm $pipeline_instance
+rm $pipeline_instance
 rm pipeline.jar
 rm ingest.jar
 rm prices.json
