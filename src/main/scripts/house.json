@@ -1,0 +1,32 @@
+[
+  {
+    "MSSubClass":20.0,
+    "MSZoning":"RL",
+    "LotFrontage":241.0,
+    "LotArea":31340.0,
+    "Neighborhood":"NAmes",
+    "OverallQual":6.0,
+    "OverallCond":5.0,
+    "YearBuilt":19770.0,
+    "YearRemodAdd":1979.0,
+    "RoofStyle":"Hip",
+    "BsmtQual":"TA",
+    "BsmtExposure":"Gd",
+    "HeatingQC":"Fa",
+    "CentralAir":"Y",
+    "FirstFlrSF":1656.0,
+    "SecondFlrSF":0.0,
+    "GrLivArea":1656.0,
+    "BsmtFullBath":1.0,
+    "BedroomAbvGr":3.0,
+    "KitchenQual":"TA",
+    "TotRmsAbvGrd":7.0,
+    "Fireplaces":2.0,
+    "FireplaceQu":"Gd",
+    "GarageType":"Attchd",
+    "GarageFinish":"Fin",
+    "GarageArea":528.0,
+    "MiscVal":0.0,
+    "YrSold":2011.0
+  }
+]
