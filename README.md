@@ -17,3 +17,4 @@
 * git
 * maven
 * docker
+* bash (Linux)
