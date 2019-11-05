@@ -19,7 +19,7 @@
   <modules>
       <module>module-pipeline</module>
       <module>module-pipeline-rest</module>
-      <module>module-ingest-housedata</module>
+      <module>module-ingestion-housedata</module>
       <module>module-pipeline-estimate-houseprice</module>
   </modules>
 
