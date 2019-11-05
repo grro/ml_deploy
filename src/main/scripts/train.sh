@@ -5,7 +5,7 @@ groupId=eu.redzoo.ml
 artifactId=pipeline-estimate-houseprice
 version=1.0.3
 
-echo copying ingest jar to local dir
+echo copying ingestion jar to local dir
 ingest_app_uri="https://github.com/grro/ml_deploy/raw/master/example-repo/lib-releases/eu/redzoo/ml/ingestion-housedata/2.2.3/ingestion-housedata-2.2.3-jar-with-dependencies.jar"
 curl -s -L $ingest_app_uri --output ingestion.jar
 
@@ -26,6 +26,6 @@ echo curl -X PUT --data-binary "@$pipeline_instance" "https://github.com/grro/ml
 
 rm $pipeline_instance
 rm pipeline.jar
-rm ingest.jar
+rm ingestion.jar
 rm prices.json
 rm houses.json
